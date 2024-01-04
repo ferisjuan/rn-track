@@ -60,6 +60,17 @@ const signin = (dispatch) => async (credentials) => {
   }
 }
 
+const tryLocalSignin = (dispatch) => async () => {
+  const token = await AsyncStorage.getItem('token')
+
+  if (token) {
+    dispatch({ type: 'signup', payload: token })
+    navigate('TrackList')
+  } else {
+    navigate('Signup')
+  }
+}
+
 const signout = (dispatch) => () => { }
 
 export const { Context, Provider } = createDataContext(
@@ -67,7 +78,8 @@ export const { Context, Provider } = createDataContext(
   {
     clearErrorMessage,
     signin,
-    signup
+    signup,
+    tryLocalSignin
   },
   { token: null, errorMessage: '' }
 )
