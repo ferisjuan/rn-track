@@ -1,14 +1,22 @@
 import { Button, StyleSheet, Text, View } from "react-native";
 
-const AccountScreen = ({ navigation }) => {
+import { useAuthContext } from '../context/AuthContext';
+import Spacer from "../components/Spacer";
+
+const AccountScreen = () => {
+  const { signout } = useAuthContext()
+
   return (
     <>
-      <Text>AccountScreen</Text>
+      <Spacer>
+        <Text style={{ fontSize: 44 }}>AccountScreen</Text>
 
-      <Button
-        title="Go to Sign in"
-        onPress={() => navigation.navigate('Signin')}
-      />
+
+        <Button
+          title="Sign Out"
+          onPress={signout}
+        />
+      </Spacer>
     </>
   );
 }

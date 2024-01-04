@@ -12,6 +12,8 @@ const authReducer = (state, action) => {
       return { ...state, errorMessage: '' }
     case 'signin':
       return { errorMessage: '', token: action.payload }
+    case 'signout':
+      return { errorMessage: '', token: null }
     default:
       return state
   }
@@ -23,11 +25,11 @@ const clearErrorMessage = (dispatch) => () => {
 
 const signup = (dispatch) => async (credentials) => {
   try {
-    const response = await trackerApi.post('/signin', credentials)
+    const response = await trackerApi.post('/signup', credentials)
     await AsyncStorage.setItem('token', response.data.token)
 
     dispatch({
-      type: 'signup',
+      type: 'signin',
       payload: response.data.token
     })
 
@@ -46,7 +48,7 @@ const signin = (dispatch) => async (credentials) => {
     await AsyncStorage.setItem('token', response.data.token)
 
     dispatch({
-      type: 'signup',
+      type: 'signin',
       payload: response.data.token
     })
 
@@ -71,7 +73,11 @@ const tryLocalSignin = (dispatch) => async () => {
   }
 }
 
-const signout = (dispatch) => () => { }
+const signout = (dispatch) => async () => {
+  await AsyncStorage.removeItem('token')
+  dispatch({ type: 'signout', payload: null })
+  navigate('loginFlow')
+}
 
 export const { Context, Provider } = createDataContext(
   authReducer,
@@ -79,6 +85,7 @@ export const { Context, Provider } = createDataContext(
     clearErrorMessage,
     signin,
     signup,
+    signout,
     tryLocalSignin
   },
   { token: null, errorMessage: '' }
